@@ -179,13 +179,6 @@ func (im IBCModule) OnRecvPacket(
 		ack = channeltypes.NewErrorAcknowledgement(ackErr)
 	}
 
-	bz := data.GetBytes()
-	if !bytes.Equal(bz, packet.GetData()) {
-		ackErr = sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "packet data did not marshal to expected bytes: %X ≠ %X", bz, packet.GetData())
-		ack = channeltypes.NewErrorAcknowledgement(ackErr)
-		im.keeper.Logger(ctx).Error(fmt.Sprintf("%s sequence %d", ackErr.Error(), packet.Sequence))
-	}
-
 	// only attempt the application logic if the packet data
 	// was successfully decoded
 	if ack.Success() {
